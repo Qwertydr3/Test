@@ -2,35 +2,18 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Qwertydre Terminal</title>
-        <style>
+    <title>Qwertydre Terminal | Full Control</title>
+    <style>
         body { background: #000; color: #e2e8f0; font-family: monospace; margin: 0; padding: 20px; overflow-x: hidden; }
         #matrix-canvas { position: fixed; inset: 0; z-index: -1; }
-        
-        .main-col { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-            position: relative; 
-            z-index: 1; 
-            /* Sfondo traslucido con effetto vetro */
-            background: rgba(5, 7, 10, 0.6); 
-            backdrop-filter: blur(5px); 
-            padding: 30px; 
-            border-radius: 12px; 
-            border: 1px solid rgba(30, 41, 59, 0.5); 
-        }
-
-        .list-container { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; }
+        .main-col { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 1; background: rgba(5, 7, 10, 0.6); backdrop-filter: blur(5px); padding: 30px; border-radius: 12px; border: 1px solid rgba(30, 41, 59, 0.5); }
         .ticker-btn { background: #1e293b; color: white; border: 1px solid #334155; padding: 15px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .admin-panel { background: #0f172a; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: center; }
         #tv-widget { height: 400px; background: #0d1117; border: 1px solid #334155; }
         .bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .news-box { height: 350px; background: rgba(0,0,0,0.6); border: 1px solid #2563eb; padding: 15px; overflow: hidden; display: flex; flex-direction: column; }
         .ai-link { text-decoration: none; display: block; text-align: center; padding: 20px; background: #2563eb; color: white; font-size: 18px; font-weight: bold; }
     </style>
-    
 </head>
 <body>
 
@@ -42,39 +25,30 @@
         <button class="ticker-btn" style="flex:1" onclick="setRegion('EU')">EU</button>
         <button class="ticker-btn" style="flex:1" onclick="setRegion('ASIA')">ASIA</button>
     </div>
-    <div class="list-container" id="ticker-list"></div>
     
+    <div class="admin-panel">
+        <input type="text" id="n-in" placeholder="Nome" style="padding:5px;">
+        <input type="text" id="s-in" placeholder="Ticker" style="padding:5px;">
+        <select id="r-in"><option>USA</option><option>EU</option><option>ASIA</option></select>
+        <button onclick="addStock()" class="ticker-btn" style="padding:5px 15px;">AGGIUNGI</button>
+    </div>
+
+    <div class="list-container" id="ticker-list" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;"></div>
     <div id="tv-widget"></div>
 
-    <div class="bottom-panels" style="grid-template-columns: 1fr;">
-        <div class="news-box" style="height: auto; border: 1px solid #334155; background: #050505; color: #fff;">
-            <div style="color:#0f0; font-weight:bold; margin-bottom:10px;"> Range Atteso (30GG)</div>
-            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
-                <input type="number" id="m-price" placeholder="Prezzo Attuale" style="background:#000; color:#0f0; border:1px solid #333; padding:5px; width:120px;">
-                <input type="number" id="m-vol" placeholder="Volatilità %" style="background:#000; color:#0f0; border:1px solid #333; padding:5px; width:120px;">
-                <button onclick="calcolaStatistica()" style="background:#2563eb; color:white; border:none; padding:8px 15px; cursor:pointer; font-weight:bold;">SIMULA RANGE</button>
-            </div>
-            <div id="m-output" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 13px;">
-                <div>PESSIMISTICO (5%): <span id="res-low" style="color:red">--</span></div>
-                <div>ATTESO (50%): <span id="res-med" style="color:yellow">--</span></div>
-                <div>OTTIMISTICO (95%): <span id="res-high" style="color:lime">--</span></div>
-            </div>
-        </div>
+    <div style="background: #050505; border: 1px solid #334155; padding: 15px; border-radius: 8px;">
+        <div style="color:#f97316; font-weight:bold; margin-bottom:10px;">LIVE WAR MONITOR</div>
+        <iframe src="https://warmonitor.app/app" width="100%" height="400px" style="border: none; border-radius: 4px;"></iframe>
     </div>
 
-    <div style="background: #050505; border: 1px solid #334155; padding: 15px; border-radius: 8px;">
-        <div style="color:#f97316; font-weight:bold; margin-bottom:10px; font-size: 14px;">LIVE WAR MONITOR</div>
-        <iframe src="https://warmonitor.app/app" width="100%" height="500px" style="border: none; border-radius: 4px;"></iframe>
-    </div>
-    
     <div class="bottom-panels">
         <div class="news-box">
-            <div style="color:yellow; margin-bottom:10px; flex-shrink: 0;">CALENDARIO ECONOMICO MACRO</div>
-            <div style="flex-grow: 1; overflow: hidden;"><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>{"colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "it", "importanceFilter": "-1,0,1", "currencyFilter": "USD,EUR,JPY,GBP"}</script></div>
+            <div style="color:yellow; margin-bottom:10px;">CALENDARIO ECONOMICO</div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>{"colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "it", "importanceFilter": "-1,0,1"}</script>
         </div>
-        <div class="news-box" id="geo-box">
-            <div style="color:red; margin-bottom:10px; flex-shrink: 0;">GEOPOLITICA / BREAKING NEWS</div>
-            <div style="flex-grow: 1; overflow: hidden;"><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>{"feedMode": "market", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "100%", "locale": "it"}</script></div>
+        <div class="news-box">
+            <div style="color:red; margin-bottom:10px;">GEOPOLITICA / BREAKING NEWS</div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>{"feedMode": "market", "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "it"}</script>
         </div>
     </div>
 
@@ -86,82 +60,76 @@
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    const db = {
-        USA: [{n:"VZ",s:"VZ",cat:"Tech",vol:22},{n:"T",s:"T",cat:"Tech",vol:20},{n:"XOM",s:"XOM",cat:"Energy",vol:28},{n:"JPM",s:"JPM",cat:"Finance",vol:24}],
-        EU: [{n:"ENI",s:"ENI.MI",cat:"Energy",vol:27},{n:"TTE",s:"TTE",cat:"Energy",vol:26},{n:"ISP",s:"ISP.MI",cat:"Finance",vol:25}],
-        ASIA: [{n:"7203",s:"7203.T",cat:"Tech",vol:30},{n:"0700",s:"0700.HK",cat:"Tech",vol:32}]
+    let db = JSON.parse(localStorage.getItem('myStocks')) || {
+        USA: [{n:"VZ",s:"VZ",vol:22},{n:"T",s:"T",vol:20}],
+        EU: [{n:"ENI",s:"ENI.MI",vol:27}],
+        ASIA: [{n:"7203",s:"7203.T",vol:30}]
     };
 
     function setRegion(reg) {
         const container = document.getElementById('ticker-list');
         container.innerHTML = "";
-        db[reg].forEach(stock => {
+        db[reg].forEach((stock, index) => {
             const btn = document.createElement('button');
             btn.className = "ticker-btn";
-            btn.innerText = stock.n;
+            btn.innerHTML = `${stock.n} <span style="color:red; margin-left:8px; font-weight:bold;" onclick="event.stopPropagation(); deleteStock('${reg}', ${index})">X</span>`;
             btn.onclick = () => load(stock.s, stock.vol);
             container.appendChild(btn);
         });
     }
 
+    function addStock() {
+        const reg = document.getElementById('r-in').value;
+        db[reg].push({ n: document.getElementById('n-in').value, s: document.getElementById('s-in').value, vol: parseInt(document.getElementById('v-in').value) });
+        localStorage.setItem('myStocks', JSON.stringify(db));
+        setRegion(reg);
+    }
+
+    function deleteStock(reg, index) {
+        db[reg].splice(index, 1);
+        localStorage.setItem('myStocks', JSON.stringify(db));
+        setRegion(reg);
+    }
+
     function load(s, vol) {
         window.currentSymbol = s;
-        document.getElementById('m-vol').value = vol;
         document.getElementById('tv-widget').innerHTML = "";
         new TradingView.widget({"container_id": "tv-widget", "symbol": s, "width": "100%", "height": "400", "theme": "dark", "locale": "it", "widgetType": "symbol-info"});
         updateLinks();
     }
 
-    function calcolaStatistica() {
-        const S0 = parseFloat(document.getElementById('m-price').value);
-        const volAnnua = parseFloat(document.getElementById('m-vol').value) / 100;
-        if (!S0 || !volAnnua) return alert("Inserisci Prezzo e Volatilità");
+    const c = document.getElementById('matrix-canvas'), ctx = c.getContext('2d');
+    function res() { c.width = window.innerWidth; c.height = window.innerHeight; }
+    window.onresize = res; res();
+    const d = Array(Math.floor(c.width/20)).fill(1);
+    setInterval(() => {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height);
+        ctx.fillStyle = '#0F0'; ctx.font = '15px monospace';
+        d.forEach((y, i) => { ctx.fillText(Math.random()>0.5?"1":"0", i*20, y*20); if(y*20 > c.height && Math.random()>0.975) d[i]=0; d[i]++; });
+    }, 60);
 
-        const T = 30 / 365;
-        const N = 5000;
-        const df = 5;
-        
-        let results = [];
-        const mu = 0.08; 
-
-        for(let i=0; i<N; i++) {
-            const u = Math.random();
-            const v = Math.random();
-            const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-            const x = z / Math.sqrt(Math.random() / df);
-            
-            const ST = S0 * Math.exp((mu - 0.5 * Math.pow(volAnnua, 2)) * T + volAnnua * Math.sqrt(T) * x);
-            results.push(ST);
-        }
-
-        results.sort((a,b) => a-b);
-        
-        const p05 = results[Math.floor(N * 0.05)];
-        const p25 = results[Math.floor(N * 0.25)];
-        const p50 = results[Math.floor(N * 0.50)];
-        const p75 = results[Math.floor(N * 0.75)];
-        const p95 = results[Math.floor(N * 0.95)];
-
-        document.getElementById('m-output').innerHTML = `
-            <div style="grid-column: span 3; text-align:center; font-weight:bold; color:#2563eb;">LIVELLI OPERATIVI 30GG</div>
-            <div style="color:red">SUPP. 5%: ${p05.toFixed(2)}</div>
-            <div style="color:orange">SUPP. 25%: ${p25.toFixed(2)}</div>
-            <div style="color:white">PIVOT: ${p50.toFixed(2)}</div>
-            <div style="color:yellow">RES. 75%: ${p75.toFixed(2)}</div>
-            <div style="color:lime">TARGET 95%: ${p95.toFixed(2)}</div>
-        `;
-    }
-    
     function updateLinks() {
-        const s = window.currentSymbol || "VZ";
         const engine = document.getElementById('ai-engine').value;
-        const p = `Analisi quantitativa su ${s}. Considera i dati geopolitici e macroeconomici attuali. Analizza Fondamentali, dividendi e idoneità long-term 2026.`;
+        const p = `Agisci come un Senior Financial Quantitative Analyst specializzato in mercati globali. Il tuo obiettivo è condurre unanalisi rigorosa, basata su dati e neutrale su: ${window.currentSymbol || 'Asset'}.
+​Linee guida metodologiche:
+​Analisi Quantitativa e Fondamentale: Integra i dati tecnici con il computo dei dividendi (se applicabile) e l'impatto dei flussi macroeconomici.
+​Analisi Geopolitica e Sentiment: Valuta l'impatto dei conflitti attuali e delle notizie breaking non come semplici titoli, ma come variabili che influenzano la volatilità e il rischio sistemico. Specifica la probabilità di esito per ogni scenario ipotizzato.
+​Strategia Operativa:
+​Lungo Periodo (Investimento): Analizza la tesi di investimento basata su ciclicità, fondamentali e resilienza dell'asset.
+​Breve Periodo (Intraday/Trading): Identifica setup operativi solo in presenza di un edge statistico chiaro. Se non esistono condizioni di mercato favorevoli o confermate dai dati, indica esplicitamente che nessuna operazione è raccomandata.
+​Tono e Stile: Mantieni un registro professionale, clinico e diretto. Evita il linguaggio promozionale, le rassicurazioni inutili e ogni forma di accondiscendenza. Sii spietatamente oggettivo.
+​Formato richiesto:
+​Executive Summary: Sintesi dello stato attuale dell'asset.
+​Dati e Driver: Elenco dei fattori chiave che guidano il prezzo (quantitativi e qualitativi).
+​Analisi di Scenario: Probabili impatti delle news correnti (Best, Base, Worst case).
+​Verdict: * Long-term outlook: (Rischio/Rendimento).
+​Short-term setup: (Livelli tecnici chiave, se presenti).
+​Disclaimer: Sii breve nel ricordare che si tratta di analisi a scopo informativo e non di consulenza finanziaria.`;
         const urls = { chatgpt: `https://chat.openai.com/?q=${encodeURIComponent(p)}`, perplexity: `https://www.perplexity.ai/?q=${encodeURIComponent(p)}`, claude: `https://claude.ai/new?q=${encodeURIComponent(p)}` };
         document.getElementById('ai-anchor').href = urls[engine];
     }
 
     setRegion('USA');
-    load('VZ', 22);
 </script>
 </body>
 </html>
