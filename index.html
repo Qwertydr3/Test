@@ -1,136 +1,92 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Qwertydre Terminal | Full Control</title>
-    <style>
-        body { background: #000; color: #e2e8f0; font-family: monospace; margin: 0; padding: 20px; overflow-x: hidden; }
-        #matrix-canvas { position: fixed; inset: 0; z-index: -1; }
-        .main-col { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 1; background: rgba(5, 7, 10, 0.6); backdrop-filter: blur(5px); padding: 30px; border-radius: 12px; border: 1px solid rgba(30, 41, 59, 0.5); }
-        .ticker-btn { background: #1e293b; color: white; border: 1px solid #334155; padding: 15px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        .admin-panel { background: #0f172a; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: center; }
-        #tv-widget { height: 400px; background: #0d1117; border: 1px solid #334155; }
-        .bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .news-box { height: 350px; background: rgba(0,0,0,0.6); border: 1px solid #2563eb; padding: 15px; overflow: hidden; display: flex; flex-direction: column; }
-        .ai-link { text-decoration: none; display: block; text-align: center; padding: 20px; background: #2563eb; color: white; font-size: 18px; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<title>Matrix Boot Sequence</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        overflow: hidden;
+        height: 100%;
+        font-family: monospace;
+    }
+
+    /* Testo centrale stile boot */
+    #bootText {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #00ff00;
+        font-size: 22px;
+        text-align: center;
+        opacity: 0;
+        animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+</style>
 </head>
 <body>
 
-<canvas id="matrix-canvas"></canvas>
+<canvas id="matrixCanvas"></canvas>
 
-<div class="main-col">
-    <div style="display: flex; gap: 10px;">
-        <button class="ticker-btn" style="flex:1" onclick="setRegion('USA')">USA</button>
-        <button class="ticker-btn" style="flex:1" onclick="setRegion('EU')">EU</button>
-        <button class="ticker-btn" style="flex:1" onclick="setRegion('ASIA')">ASIA</button>
-    </div>
-    
-    <div class="admin-panel">
-        <input type="text" id="n-in" placeholder="Nome" style="padding:5px;">
-        <input type="text" id="s-in" placeholder="Ticker" style="padding:5px;">
-        <input type="number" id="v-in" placeholder="Vol %" style="width:60px; padding:5px;">
-        <select id="r-in"><option>USA</option><option>EU</option><option>ASIA</option></select>
-        <button onclick="addStock()" class="ticker-btn" style="padding:5px 15px;">AGGIUNGI</button>
-    </div>
-
-    <div class="list-container" id="ticker-list" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;"></div>
-    <div id="tv-widget"></div>
-
-    <div style="background: #050505; border: 1px solid #334155; padding: 15px; border-radius: 8px;">
-        <div style="color:#f97316; font-weight:bold; margin-bottom:10px;">LIVE WAR MONITOR</div>
-        <iframe src="https://warmonitor.app/app" width="100%" height="400px" style="border: none; border-radius: 4px;"></iframe>
-    </div>
-
-    <div class="bottom-panels">
-        <div class="news-box">
-            <div style="color:yellow; margin-bottom:10px;">CALENDARIO ECONOMICO</div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>{"colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "it", "importanceFilter": "-1,0,1"}</script>
-        </div>
-        <div class="news-box">
-            <div style="color:red; margin-bottom:10px;">GEOPOLITICA / BREAKING NEWS</div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>{"feedMode": "market", "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "it"}</script>
-        </div>
-    </div>
-
-    <select id="ai-engine" onchange="updateLinks()" style="padding:15px; font-size:16px;">
-        <option value="chatgpt">ChatGPT</option><option value="perplexity">Perplexity</option><option value="claude">Claude</option>
-    </select>
-    <a id="ai-anchor" href="#" target="_blank" class="ai-link">ESEGUI ANALISI</a>
+<div id="bootText">
+    <span>Avvio Sistemi...</span><br>
+    <span>Caricamento Moduli...</span><br>
+    <span>Decriptazione core...</span><br>
+    <span>Sequenza Boot completata.</span><br><br>
+    <span>Reindirizzamento...</span>
 </div>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    let db = JSON.parse(localStorage.getItem('myStocks')) || {
-        USA: [{n:"VZ",s:"VZ",vol:22},{n:"T",s:"T",vol:20}],
-        EU: [{n:"ENI",s:"ENI.MI",vol:27}],
-        ASIA: [{n:"7203",s:"7203.T",vol:30}]
-    };
+    /* ---------------- MATRIX EFFECT ---------------- */
+    const canvas = document.getElementById("matrixCanvas");
+    const ctx = canvas.getContext("2d");
 
-    function setRegion(reg) {
-        const container = document.getElementById('ticker-list');
-        container.innerHTML = "";
-        db[reg].forEach((stock, index) => {
-            const btn = document.createElement('button');
-            btn.className = "ticker-btn";
-            btn.innerHTML = `${stock.n} <span style="color:red; margin-left:8px; font-weight:bold;" onclick="event.stopPropagation(); deleteStock('${reg}', ${index})">X</span>`;
-            btn.onclick = () => load(stock.s, stock.vol);
-            container.appendChild(btn);
-        });
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const fontSize = 18;
+    const columns = canvas.width / fontSize;
+
+    const drops = [];
+    for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * canvas.height;
     }
 
-    function addStock() {
-        const reg = document.getElementById('r-in').value;
-        db[reg].push({ n: document.getElementById('n-in').value, s: document.getElementById('s-in').value, vol: parseInt(document.getElementById('v-in').value) });
-        localStorage.setItem('myStocks', JSON.stringify(db));
-        setRegion(reg);
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#00ff00";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = letters.charAt(Math.floor(Math.random() * letters.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
     }
 
-    function deleteStock(reg, index) {
-        db[reg].splice(index, 1);
-        localStorage.setItem('myStocks', JSON.stringify(db));
-        setRegion(reg);
-    }
+    setInterval(drawMatrix, 40);
 
-    function load(s, vol) {
-        window.currentSymbol = s;
-        document.getElementById('tv-widget').innerHTML = "";
-        new TradingView.widget({"container_id": "tv-widget", "symbol": s, "width": "100%", "height": "400", "theme": "dark", "locale": "it", "widgetType": "symbol-info"});
-        updateLinks();
-    }
+    /* ---------------- REDIRECT ---------------- */
+    const redirectTime = 4; // secondi prima del redirect
 
-    const c = document.getElementById('matrix-canvas'), ctx = c.getContext('2d');
-    function res() { c.width = window.innerWidth; c.height = window.innerHeight; }
-    window.onresize = res; res();
-    const d = Array(Math.floor(c.width/20)).fill(1);
-    setInterval(() => {
-        ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height);
-        ctx.fillStyle = '#0F0'; ctx.font = '15px monospace';
-        d.forEach((y, i) => { ctx.fillText(Math.random()>0.5?"1":"0", i*20, y*20); if(y*20 > c.height && Math.random()>0.975) d[i]=0; d[i]++; });
-    }, 60);
-
-    function updateLinks() {
-        const engine = document.getElementById('ai-engine').value;
-        const p = `Agisci come un Senior Financial Quantitative Analyst specializzato in mercati globali. Il tuo obiettivo è condurre unanalisi rigorosa, basata su dati e neutrale su: ${window.currentSymbol || 'Asset'}.
-​Linee guida metodologiche:
-​Analisi Quantitativa e Fondamentale: Integra i dati tecnici con il computo dei dividendi (se applicabile) e l'impatto dei flussi macroeconomici.
-​Analisi Geopolitica e Sentiment: Valuta l'impatto dei conflitti attuali e delle notizie breaking non come semplici titoli, ma come variabili che influenzano la volatilità e il rischio sistemico. Specifica la probabilità di esito per ogni scenario ipotizzato.
-​Strategia Operativa:
-​Lungo Periodo (Investimento): Analizza la tesi di investimento basata su ciclicità, fondamentali e resilienza dell'asset.
-​Breve Periodo (Intraday/Trading): Identifica setup operativi solo in presenza di un edge statistico chiaro. Se non esistono condizioni di mercato favorevoli o confermate dai dati, indica esplicitamente che nessuna operazione è raccomandata.
-​Tono e Stile: Mantieni un registro professionale, clinico e diretto. Evita il linguaggio promozionale, le rassicurazioni inutili e ogni forma di accondiscendenza. Sii spietatamente oggettivo.
-​Formato richiesto:
-​Executive Summary: Sintesi dello stato attuale dell'asset.
-​Dati e Driver: Elenco dei fattori chiave che guidano il prezzo (quantitativi e qualitativi).
-​Analisi di Scenario: Probabili impatti delle news correnti (Best, Base, Worst case).
-​Verdict: * Long-term outlook: (Rischio/Rendimento).
-​Short-term setup: (Livelli tecnici chiave, se presenti).
-​Disclaimer: Sii breve nel ricordare che si tratta di analisi a scopo informativo e non di consulenza finanziaria.`;
-        const urls = { chatgpt: `https://chat.openai.com/?q=${encodeURIComponent(p)}`, perplexity: `https://www.perplexity.ai/?q=${encodeURIComponent(p)}`, claude: `https://claude.ai/new?q=${encodeURIComponent(p)}` };
-        document.getElementById('ai-anchor').href = urls[engine];
-    }
-
-    setRegion('USA');
+    setTimeout(() => {
+        window.location.href = "menu.html";
+    }, redirectTime * 1000);
 </script>
+
 </body>
 </html>
