@@ -18,8 +18,8 @@
     .navbar {
         width: 100%;
         background: rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(6px);
-        border-bottom: 1px solid #334155;
+        margin-bottom: 60px; 
+        justify-content: center;       
         padding: 12px 20px;
         display: flex;
         gap: 15px;
@@ -28,20 +28,46 @@
         z-index: 10;
     }
     .nav-btn {
-        background: rgba(30, 41, 59, 0.7);
-        color: #fff;
-        padding: 10px 18px;
-        border: 1px solid #334155;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        transition: 0.2s;
+            padding: 15px 40px;
+            font-size: 20px;
+            color: #00ff00;
+            background: transparent;
+            border: 2px solid #00ff00;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #00ff00;
     }
 
     .nav-btn:hover {
-        background: #2563eb;
+            background: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            transform: scale(1.05);
     }
+
+            .matrix-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            color: #00ff00;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            border: 2px solid #00ff00;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .matrix-btn:hover {
+            background: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            transform: scale(1.05);
+        }
+
 
     /* SECTIONS */
     .section {
@@ -79,6 +105,7 @@
     <button class="nav-btn" onclick="window.location.href='menu.html'">Home</button>
     <button class="nav-btn" onclick="window.location.href='warmonitor.html'">War Monitor</button>
     <button class="nav-btn" onclick="window.location.href='analisi.html'">Analisi Finanziarie</button>
+    <button class="nav-btn" onclick="window.location.href='download.html'">Download</button>
     
 </div>
 

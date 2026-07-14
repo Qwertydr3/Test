@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Qwertydre Terminal</title>
+</head>
+<style>
+    body { background: #000; color: #e2e8f0; font-family: monospace; margin: 0; padding: 20px; overflow-x: hidden; }
+        #matrix-canvas { position: fixed; inset: 0; z-index: -1; }
+        .main-col { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 1; background: rgba(5, 7, 10, 0.6); backdrop-filter: blur(5px); padding: 30px; border-radius: 12px; border: 1px solid rgba(30, 41, 59, 0.5); }
+        .ticker-btn { background: #1e293b; color: white; border: 1px solid #334155; padding: 15px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .admin-panel { background: #0f172a; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: center; }
+        #tv-widget { height: 400px; background: #0d1117; border: 1px solid #334155; }
+        .bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .news-box { height: 350px; background: rgba(0,0,0,0.6); border: 1px solid #2563eb; padding: 15px; overflow: hidden; display: flex; flex-direction: column; }
+        .ai-link { text-decoration: none; display: block; text-align: center; padding: 20px; background: #2563eb; color: white; font-size: 18px; font-weight: bold; }
+ </style>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+<script>
+const c = document.getElementById('matrix-canvas'), ctx = c.getContext('2d');
+    function res() { c.width = window.innerWidth; c.height = window.innerHeight; }
+    window.onresize = res; res();
+    const d = Array(Math.floor(c.width/20)).fill(1);
+    setInterval(() => {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height);
+        ctx.fillStyle = '#0F0'; ctx.font = '15px monospace';
+        d.forEach((y, i) => { ctx.fillText(Math.random()>0.5?"1":"0", i*20, y*20); if(y*20 > c.height && Math.random()>0.975) d[i]=0; d[i]++; });
+    }, 60);
+</script>
+</body>
+</html>

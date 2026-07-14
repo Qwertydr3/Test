@@ -7,19 +7,55 @@
         body { background: #000; color: #e2e8f0; font-family: monospace; margin: 0; padding: 20px; overflow-x: hidden; }
         #matrix-canvas { position: fixed; inset: 0; z-index: -1; }
         .main-col { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 1; background: rgba(5, 7, 10, 0.6); backdrop-filter: blur(5px); padding: 30px; border-radius: 12px; border: 1px solid rgba(30, 41, 59, 0.5); }
-        .ticker-btn { background: #1e293b; color: white; border: 1px solid #334155; padding: 15px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        .admin-panel { background: #0f172a; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: center; }
+        
+.ticker-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            color: #00ff00;
+            background: transparent;
+            border: 2px solid #00ff00;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #00ff00;}
+
+.ticker-btn:hover {
+            background: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            transform: scale(1.05);
+    }
+
+        .admin-panel { background: rgba(0, 0, 0, 0.35);
+         padding: 15px; 
+         border-radius: 8px; 
+         display:flex; 
+         gap: 10px;
+         align-items: center; 
+         justify-content: center;}
+
+.admin-panel input {
+    border: 2px solid #00ff00;   /* colore bordo */
+    border-radius: 6px;          /* angoli arrotondati */
+    background: #0f172a;         /* sfondo scuro */
+    color: #00ff00;              /* testo verde */
+    padding: 8px 10px;           /* spazio interno */
+}
+
+
         #tv-widget { height: 400px; background: #0d1117; border: 1px solid #334155; }
+      
         .bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .news-box { height: 350px; background: rgba(0,0,0,0.6); border: 1px solid #2563eb; padding: 15px; overflow: hidden; display: flex; flex-direction: column; }
         .ai-link { text-decoration: none; display: block; text-align: center; padding: 20px; background: #2563eb; color: white; font-size: 18px; font-weight: bold; }
    
 /* NAVBAR */
-    .navbar {
+     .navbar {
         width: 100%;
         background: rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(6px);
-        border-bottom: 1px solid #334155;
+        margin-bottom: 60px; 
+        justify-content: center;       
         padding: 12px 20px;
         display: flex;
         gap: 15px;
@@ -28,20 +64,45 @@
         z-index: 10;
     }
     .nav-btn {
-        background: rgba(30, 41, 59, 0.7);
-        color: #fff;
-        padding: 10px 18px;
-        border: 1px solid #334155;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        transition: 0.2s;
+            padding: 15px 40px;
+            font-size: 20px;
+            color: #00ff00;
+            background: transparent;
+            border: 2px solid #00ff00;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #00ff00;
     }
 
     .nav-btn:hover {
-        background: #2563eb;
+            background: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            transform: scale(1.05);
     }
+
+            .matrix-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            color: #00ff00;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            border: 2px solid #00ff00;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .matrix-btn:hover {
+            background: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            transform: scale(1.05);
+        }
 
     /* SECTIONS */
     .section {
@@ -49,6 +110,7 @@
         padding: 30px;
         margin: 20px auto;
         max-width: 1200px;
+        justify-content: center;  
 
         background: rgba(5, 7, 10, 0.45);
         border-radius: 12px;
@@ -70,6 +132,18 @@
         border-radius: 8px;
     }
 
+.delete-x {
+    color: #ff3333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delete-x:hover {
+    color: #ff0000;
+    text-shadow: 0 0 10px red;
+}
+
 
  </style>
 </head>
@@ -82,6 +156,7 @@
     <button class="nav-btn" onclick="window.location.href='menu.html'">Home</button>
     <button class="nav-btn" onclick="window.location.href='warmonitor.html'">War Monitor</button>
     <button class="nav-btn" onclick="window.location.href='analisi.html'">Analisi Finanziarie</button>
+    <button class="nav-btn" onclick="window.location.href='download.html'">Download</button>
     
 </div>
  
@@ -96,7 +171,7 @@
     <div class="admin-panel">
         <input type="text" id="n-in" placeholder="Nome" style="padding:5px;">
         <input type="text" id="s-in" placeholder="Ticker" style="padding:5px;">
-        <input type="number" id="v-in" placeholder="Vol %" style="width:60px; padding:5px;">
+        
         <select id="r-in"><option>USA</option><option>EU</option><option>ASIA</option></select>
         <button onclick="addStock()" class="ticker-btn" style="padding:5px 15px;">AGGIUNGI</button>
     </div>
@@ -135,7 +210,13 @@
         db[reg].forEach((stock, index) => {
             const btn = document.createElement('button');
             btn.className = "ticker-btn";
-            btn.innerHTML = `${stock.n} <span style="color:red; margin-left:8px; font-weight:bold;" onclick="event.stopPropagation(); deleteStock('${reg}', ${index})">X</span>`;
+            btn.innerHTML = `
+    <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+        <span>${stock.n}</span>
+        <span class="delete-x" onclick="event.stopPropagation(); deleteStock('${reg}', ${index})">X</span>
+    </div>
+`;
+
             btn.onclick = () => load(stock.s, stock.vol);
             container.appendChild(btn);
         });
@@ -143,7 +224,7 @@
 
     function addStock() {
         const reg = document.getElementById('r-in').value;
-        db[reg].push({ n: document.getElementById('n-in').value, s: document.getElementById('s-in').value, vol: parseInt(document.getElementById('v-in').value) });
+        db[reg].push({ n: document.getElementById('n-in').value, s: document.getElementById('s-in').value,});
         localStorage.setItem('myStocks', JSON.stringify(db));
         setRegion(reg);
     }
@@ -217,7 +298,7 @@
         document.getElementById('ai-anchor').href = urls[engine];
     }
 
-    setRegion('USA');
+    setRegion('');
 </script>
 </body>
 </html>
